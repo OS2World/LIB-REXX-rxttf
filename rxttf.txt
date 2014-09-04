@@ -1,0 +1,72 @@
+13 March 1999.  Michal Necasek  (mike@mendelu.cz)
+                Daniel Hellerstein (danielh@econ.ag.gov)
+
+        RxTTF: A procedure for creating bitmaps from TTF fonts.
+
+RxTTF.DLL is an "OS/2 REXX callable" procedure for creating a "bitmap"
+image from a character string, using a TTF font.
+
+RxTTF can use any TTF font you may have. Furthermore, you can
+specify the point size!
+
+1) Installation:
+
+After obtaining RxTTF, unzip it to an empty temporary directory.
+Then, copy RXTTF.DLL to someplace in your LIBPATH (say, x:\OS2\DLL).
+
+2) Usage:
+
+To use RxTTF, you first have to tell your REXX program where to find
+it. The following can be used:
+
+    isthere=rxfuncquery('rxttf_image')
+    if isthere=1 then do
+       call RxFuncAdd 'rxttf_image', 'RXTTF', 'rxttf_image'
+    end
+
+The calling syntax of rxttf_image is:
+
+    rc = rxttf_image(message,ttf_file,psize, data)
+
+where
+  message : a character string, length is limited to 1024 characters.
+  ttf_file: the name of the TTF file you want to use
+  ptsize  : the point size of to use
+  data    : a variable name to use as a stem variable.
+and
+   rc =  status code. A zero means success
+
+rxttf_image returns results in the "data" stem variable (you don't have
+to use "data", it can be any valid rexx variable name).
+
+   data.!rows =  the number of rows in the image
+   data.!cols =  the number of columns in the image
+
+   data.i; where i = 0 to data.!rows-1 : the contents of the "ith" row
+                     (where row 0 is the top of the image)
+
+data.i is a character string, with each character representing the value of
+the corresponding pixel. In particular, character values of 0 and 1 are used.
+
+Thus: the decimal value of the pixel at the  23 column of the
+             9th row of the image is:
+                a_value=c2d(substr(data.8,23,1))
+             a_value will equal either 0 or 1.
+....perhaps these would be more accurately described as "byte maps".
+
+3) Examples:
+   rc=rxttf_image("Hello","c:\os2\mdos\winos2\system\times.ttf",12,'data')
+   rc=rxttf_image('Gone Fishing",'fishing.ttf',25,'messx')
+
+
+4) Notes:
+ * RxTTF is based on source code produced by the FreeType project:
+       http://www.freetype.org/ft_os2/index.html
+ * For ambitious C programmers, the source code is also provided.
+ * RxTTF is in the public domain.
+ * Use RxTTF at your own risk.
+ * RXTTF.CMD is a simple "banner text program" that demonstrates how
+   to use RxTTF. For a more feature rich version of this banner program,
+   please try TTF_TEXT (look on hobbes.nmsu.edu).
+
+
